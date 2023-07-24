@@ -3,22 +3,12 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "app.revanced"
-
-val githubUsername: String = project.findProperty("gpr.user") as? String ?: System.getenv("GITHUB_ACTOR")
-val githubPassword: String = project.findProperty("gpr.key") as? String ?: System.getenv("GITHUB_TOKEN")
+group = "io.github.inotia00"
 
 repositories {
     google()
     mavenCentral()
     mavenLocal()
-    maven {
-        url = uri("https://maven.pkg.github.com/revanced/revanced-patcher")
-        credentials {
-            username = githubUsername
-            password = githubPassword
-        }
-    }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://plugins.gradle.org/m2/") }
 }
@@ -27,7 +17,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.22")
 
-    implementation("app.revanced:revanced-patcher:11.0.4")
+    implementation("io.github.inotia00:revanced-patcher:11.0.6-SNAPSHOT")
     implementation("info.picocli:picocli:4.7.4")
     implementation("com.github.revanced:jadb:2531a28109") // updated fork
     implementation("com.android.tools.build:apksig:8.2.0-alpha13")
