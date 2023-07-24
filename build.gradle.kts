@@ -9,6 +9,7 @@ val githubUsername: String = project.findProperty("gpr.user") as? String ?: Syst
 val githubPassword: String = project.findProperty("gpr.key") as? String ?: System.getenv("GITHUB_TOKEN")
 
 repositories {
+    google()
     mavenCentral()
     mavenLocal()
     maven {
@@ -20,7 +21,6 @@ repositories {
     }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://plugins.gradle.org/m2/") }
-    google()
 }
 
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
     implementation("app.revanced:revanced-patcher:11.0.4")
     implementation("info.picocli:picocli:4.7.4")
     implementation("com.github.revanced:jadb:2531a28109") // updated fork
-    implementation("com.android.tools.build:apksig:8.2.0-alpha10")
+    implementation("com.android.tools.build:apksig:8.2.0-alpha13")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 }
