@@ -120,6 +120,18 @@ internal object PatchCommand : Runnable {
     private var aaptBinaryPath = File("")
 
     @CommandLine.Option(
+        names = ["--rip-lib"],
+        description = ["Rip the libs (arm64-v8a etc.) from APK"]
+    )
+    private var ripLibs = arrayOf<String>()
+
+    @CommandLine.Option(
+        names = ["--unsigned"],
+        description = ["Disable signing of the final apk"]
+    )
+    private var unsigned: Boolean = false
+
+    @CommandLine.Option(
         names = ["-p", "--purge"],
         description = ["Purge the temporary resource cache directory after patching"],
         showDefaultValue = ALWAYS
@@ -202,7 +214,9 @@ internal object PatchCommand : Runnable {
 
         val alignAndSignedFile = sign(
             apk.newAlignedFile(
-                result, resourceCachePath.resolve("${outputFilePath.nameWithoutExtension}_aligned.apk")
+                result,
+                resourceCachePath.resolve("${outputFilePath.nameWithoutExtension}_aligned.apk"),
+                ripLibs
             )
         )
 
@@ -290,7 +304,9 @@ internal object PatchCommand : Runnable {
      * @param outputFile The file to save the aligned APK to.
      */
     private fun File.newAlignedFile(
-        result: PatcherResult, outputFile: File
+        result: PatcherResult,
+        outputFile: File,
+        exclude: Array<String>
     ): File {
         logger.info("Aligning $name")
 
@@ -299,20 +315,24 @@ internal object PatchCommand : Runnable {
         ZipFile(outputFile).use { file ->
             result.dexFiles.forEach {
                 file.addEntryCompressData(
-                    ZipEntry.createWithName(it.name), it.stream.readBytes()
+                    ZipEntry.createWithName(it.name),
+                    it.stream.readBytes()
                 )
             }
 
             result.resourceFile?.let {
                 file.copyEntriesFromFileAligned(
-                    ZipFile(it), ZipAligner::getEntryAlignment
+                    ZipFile(it),
+                    ZipAligner::getEntryAlignment
                 )
             }
 
             // TODO: Do not compress result.doNotCompress
-
+            val inputZipFile = ZipFile(this)
+            inputZipFile.entries.removeIf { entry -> exclude.any { entry.fileName.startsWith("lib/$it") } }
             file.copyEntriesFromFileAligned(
-                ZipFile(this), ZipAligner::getEntryAlignment
+                inputZipFile,
+                ZipAligner::getEntryAlignment
             )
         }
 
@@ -325,7 +345,8 @@ internal object PatchCommand : Runnable {
      * @param inputFile The APK file to sign.
      * @return The signed APK file. If [mount] is true, the input file will be returned.
      */
-    private fun sign(inputFile: File) = if (mount) inputFile
+    private fun sign(inputFile: File) = if (mount || unsigned)
+        inputFile
     else {
         logger.info("Signing ${inputFile.name}")
 
