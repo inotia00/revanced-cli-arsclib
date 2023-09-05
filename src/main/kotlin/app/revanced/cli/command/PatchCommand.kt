@@ -68,7 +68,7 @@ internal object PatchCommand : Runnable {
     private var exclusive = false
 
     @CommandLine.Option(
-        names = ["-f","--force"],
+        names = ["-f","--force", "--experimental"],
         description = ["Force inclusion of patches that are incompatible with the supplied APK file's version"],
         showDefaultValue = ALWAYS
     )
@@ -108,7 +108,7 @@ internal object PatchCommand : Runnable {
     private var password = "ReVanced"
 
     @CommandLine.Option(
-        names = ["-r", "--resource-cache"],
+        names = ["-r", "--resource-cache", "-t", "--temp-dir"],
         description = ["Path to temporary resource cache directory"],
         showDefaultValue = ALWAYS
     )
@@ -132,7 +132,7 @@ internal object PatchCommand : Runnable {
     private var unsigned: Boolean = false
 
     @CommandLine.Option(
-        names = ["-p", "--purge"],
+        names = ["-p", "--purge", "-c", "--clean"],
         description = ["Purge the temporary resource cache directory after patching"],
         showDefaultValue = ALWAYS
     )
