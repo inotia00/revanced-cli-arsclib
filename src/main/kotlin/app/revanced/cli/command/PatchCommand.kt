@@ -230,6 +230,7 @@ internal object PatchCommand : Runnable {
             purge(resourceCachePath)
         }
 
+        logger.info("Finished")
         // endregion
     }
 
