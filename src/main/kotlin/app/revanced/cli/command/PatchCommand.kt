@@ -251,17 +251,11 @@ internal object PatchCommand : Runnable {
         //  patches named "patch-name" and "patch name" will conflict.
         fun String.format() = lowercase().replace(" ", "-")
 
-        val formattedExcludedPatches = excludedPatches.map { it.format() }
-        val formattedIncludedPatches = includedPatches.map { it.format() }
-
         val packageName = context.packageMetadata.packageName
         val packageVersion = context.packageMetadata.packageVersion
 
         patches.forEach patch@{ patch ->
             val formattedPatchName = patch.patchName.format()
-
-            val explicitlyExcluded = formattedExcludedPatches.contains(formattedPatchName)
-            if (explicitlyExcluded) return@patch logger.info("Excluding ${patch.patchName}")
 
             // Make sure the patch is compatible with the supplied APK files package name and version.
             patch.compatiblePackages?.let { packages ->
@@ -284,13 +278,13 @@ internal object PatchCommand : Runnable {
                 return@let
             } ?: logger.fine("$formattedPatchName: No constraint on packages.")
 
-            // If the patch is implicitly included, it will be only included if [exclusive] is false.
-            val implicitlyIncluded = !exclusive && patch.include
-            // If the patch is explicitly included, it will be included even if [exclusive] is false.
-            val explicitlyIncluded = formattedIncludedPatches.contains(formattedPatchName)
-
-            val included = implicitlyIncluded || explicitlyIncluded
-            if (!included) return@patch logger.info("${patch.patchName} excluded by default") // Case 1.
+            if (excludedPatches.contains(formattedPatchName)) {
+                logger.info("Excluding ${patch.patchName}")
+                return@patch
+            } else if ((!patch.include || exclusive) && !includedPatches.contains(formattedPatchName)) {
+                logger.info("${patch.patchName} excluded by default")
+                return@patch
+            }
 
             logger.fine("Adding $formattedPatchName")
 
