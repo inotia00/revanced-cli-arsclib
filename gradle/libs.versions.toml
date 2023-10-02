@@ -1,6 +1,6 @@
 [versions]
 shadow = "8.1.1"
-apksig = "8.2.0-beta01"
+apksig = "8.1.2"
 bcpkix-jdk15on = "1.70"
 jackson-module-kotlin = "2.15.2"
 jadb = "2531a28109"
