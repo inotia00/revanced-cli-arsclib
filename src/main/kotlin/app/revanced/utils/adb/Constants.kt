@@ -10,6 +10,7 @@ internal object Constants {
 
     internal const val DELETE = "rm -rf $PLACEHOLDER"
     internal const val CREATE_DIR = "mkdir -p"
+    internal const val RESOLVE_ACTIVITY = "pm resolve-activity --brief $PLACEHOLDER"
     internal const val RESTART = "pm resolve-activity --brief $PLACEHOLDER | tail -n 1 | " +
             "xargs am start -n && kill ${'$'}(pidof -s $PLACEHOLDER)"
 
