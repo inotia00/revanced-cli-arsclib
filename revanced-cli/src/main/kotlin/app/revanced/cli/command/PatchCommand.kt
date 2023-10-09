@@ -251,10 +251,10 @@ internal object PatchCommand : Runnable {
                 ApkUtils.copyAligned(apk, this, patcherResult, ripLibs)
             }
 
-            val keystoreFilePath = keystoreFilePath ?: outputFilePath.absoluteFile.parentFile
-                .resolve("${outputFilePath.nameWithoutExtension}.keystore")
+            if (!mount && !unsigned) {
+                val keystoreFilePath = keystoreFilePath ?: outputFilePath.absoluteFile.parentFile
+                    .resolve("${outputFilePath.nameWithoutExtension}.keystore")
 
-            if (!mount || !unsigned) {
                 ApkUtils.sign(
                     tempFile,
                     outputFilePath,
