@@ -27,7 +27,7 @@ public final class app/revanced/library/ApkSigner$PrivateKeyCertificatePair {
 
 public final class app/revanced/library/ApkUtils {
 	public static final field INSTANCE Lapp/revanced/library/ApkUtils;
-	public final fun copyAligned (Ljava/io/File;Ljava/io/File;Lapp/revanced/patcher/PatcherResult;)V
+	public final fun copyAligned (Ljava/io/File;Ljava/io/File;Lapp/revanced/patcher/PatcherResult;[Ljava/lang/String;)V
 	public final fun sign (Ljava/io/File;Ljava/io/File;Lapp/revanced/library/ApkUtils$SigningOptions;)V
 }
 
