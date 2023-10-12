@@ -52,7 +52,7 @@ object ApkUtils {
 
             // TODO: Fix copying resources that are not needed anymore.
             val inputZipFile = ZipFile(apkFile)
-            inputZipFile.entries.removeIf { entry -> exclude.any { entry.fileName.startsWith("lib/$it") } }
+            inputZipFile.entries.removeIf { entry -> exclude.any { entry.fileName.startsWith("$it") } }
             file.copyEntriesFromFileAligned(
                 inputZipFile,
                 ZipFile.apkZipEntryAlignment
