@@ -130,6 +130,16 @@ internal object PatchCommand : Runnable {
     private var aaptBinaryPath: File? = null
 
     @CommandLine.Option(
+        names = ["--unsigned"], description = ["Disable signing of the final apk."]
+    )
+    private var unsigned: Boolean = false
+
+    @CommandLine.Option(
+        names = ["--rip-lib"], description = ["Rip native libs from APK. (x86_64 etc.)"]
+    )
+    private var ripLibs = arrayOf<String>()
+
+    @CommandLine.Option(
         names = ["-p", "--purge"],
         description = ["Purge the temporary resource cache directory after patching."],
         showDefaultValue = ALWAYS
@@ -250,24 +260,27 @@ internal object PatchCommand : Runnable {
             // region Save
 
             val alignedFile = resourceCachePath.resolve(apk.name).apply {
-                ApkUtils.copyAligned(apk, this, patcherResult)
+                ApkUtils.copyAligned(apk, this, patcherResult, ripLibs)
             }
 
-            val keystoreFilePath = keystoreFilePath ?: outputFilePath.absoluteFile.parentFile
-                .resolve("${outputFilePath.nameWithoutExtension}.keystore")
+            if (!mount && !unsigned) {
+                val keystoreFilePath = keystoreFilePath ?: outputFilePath.absoluteFile.parentFile
+                    .resolve("${outputFilePath.nameWithoutExtension}.keystore")
 
-            if (!mount) ApkUtils.sign(
-                alignedFile,
-                outputFilePath,
-                ApkUtils.SigningOptions(
-                    keystoreFilePath,
-                    keyStorePassword,
-                    alias,
-                    password,
-                    signer
+                ApkUtils.sign(
+                    alignedFile,
+                    outputFilePath,
+                    ApkUtils.SigningOptions(
+                        keystoreFilePath,
+                        keyStorePassword,
+                        alias,
+                        password,
+                        signer
+                    )
                 )
-            )
-            else alignedFile.renameTo(outputFilePath)
+            } else {
+                alignedFile.renameTo(outputFilePath)
+            }
 
             // endregion
 
