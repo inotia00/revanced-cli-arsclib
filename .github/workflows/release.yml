@@ -35,8 +35,6 @@ jobs:
         uses: burrunan/gradle-cache-action@v1
 
       - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Cleaning is necessary to avoid uploading two identical artifacts with different versions
         run: ./gradlew clean --no-daemon
 
