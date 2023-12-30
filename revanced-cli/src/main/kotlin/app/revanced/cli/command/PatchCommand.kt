@@ -148,6 +148,18 @@ internal object PatchCommand : Runnable {
     private var aaptBinaryPath: File? = null
 
     @CommandLine.Option(
+        names = ["--unsigned"],
+        description = ["Disable signing of the final apk."],
+    )
+    private var unsigned: Boolean = false
+
+    @CommandLine.Option(
+        names = ["--rip-lib"],
+        description = ["Rip native libs from APK."],
+    )
+    private var ripLibs = arrayOf<String>()
+
+    @CommandLine.Option(
         names = ["-p", "--purge"],
         description = ["Purge the temporary resource cache directory after patching."],
         showDefaultValue = ALWAYS,
@@ -306,10 +318,10 @@ internal object PatchCommand : Runnable {
 
             val alignedFile =
                 resourceCachePath.resolve(apk.name).apply {
-                    ApkUtils.copyAligned(apk, this, patcherResult)
+                    ApkUtils.copyAligned(apk, this, patcherResult, ripLibs)
                 }
 
-            if (!mount) {
+            if (!mount && !unsigned) {
                 ApkUtils.sign(
                     alignedFile,
                     outputFilePath,

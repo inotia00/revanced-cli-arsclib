@@ -11,7 +11,7 @@ import java.util.zip.CRC32
 import java.util.zip.Deflater
 
 class ZipFile(file: File) : Closeable {
-    private var entries: MutableList<ZipEntry> = mutableListOf()
+    var entries: MutableList<ZipEntry> = mutableListOf()
 
     // Open file for writing if it doesn't exist (because the intention is to write) or is writable.
     private val filePointer: RandomAccessFile =

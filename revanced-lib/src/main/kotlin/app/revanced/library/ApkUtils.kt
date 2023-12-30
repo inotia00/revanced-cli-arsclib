@@ -21,11 +21,13 @@ object ApkUtils {
      * @param apkFile The apk to copy entries from.
      * @param outputFile The apk to write the new entries to.
      * @param patchedEntriesSource The result of the patcher to add the patched dex files and resources.
+     * @param exclude An array of libraries to remove.
      */
     fun copyAligned(
         apkFile: File,
         outputFile: File,
         patchedEntriesSource: PatcherResult,
+        exclude: Array<String>
     ) {
         logger.info("Aligning ${apkFile.name}")
 
@@ -49,8 +51,10 @@ object ApkUtils {
             // TODO: Do not compress result.doNotCompress
 
             // TODO: Fix copying resources that are not needed anymore.
+            val inputZipFile = ZipFile(apkFile)
+            inputZipFile.entries.removeIf { entry -> exclude.any { entry.fileName.startsWith("lib/$it") } }
             file.copyEntriesFromFileAligned(
-                ZipFile(apkFile),
+                inputZipFile,
                 ZipFile.apkZipEntryAlignment,
             )
         }
