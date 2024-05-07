@@ -1,7 +1,7 @@
 package app.revanced.patcher.options
 
-import app.revanced.patcher.data.BytecodeContext
-import app.revanced.patcher.data.Context
+import app.revanced.patcher.BytecodeContext
+import app.revanced.patcher.Context
 import app.revanced.patcher.patch.*
 import app.revanced.utils.Options
 import app.revanced.utils.Options.setOptions
@@ -11,9 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 
 class PatchOptionsTestPatch : BytecodePatch() {
-    override fun execute(context: BytecodeContext): PatchResult {
-        return PatchResultSuccess()
-    }
+    override fun execute(context: BytecodeContext) {}
 
     companion object : OptionsContainer() {
         var key1 by option(
