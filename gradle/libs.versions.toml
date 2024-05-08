@@ -1,17 +1,28 @@
 [versions]
-shadow = "8.1.1"
-kotlin = "1.9.22"
-kotlinx-coroutines-core = "1.7.3"
+apksig = "8.4.0"
+apkzlib = "8.4.0"
+bcpkix-jdk15on = "1.70"
+guava = "33.2.0-jre"
+jackson-module-kotlin = "2.17.1"
+jadb = "1.2.1"
+kotlin = "1.9.23"
+kotlinx-coroutines-core = "1.8.0"
 picocli = "4.7.5"
 revanced-patcher = "19.3.1"
-revanced-library = "2.3.0"
+shadow = "8.1.1"
 
 [libraries]
+apksig = { module = "com.android.tools.build:apksig", version.ref = "apksig" }
+apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
+bcpkix-jdk15on = { module = "org.bouncycastle:bcpkix-jdk15on", version.ref = "bcpkix-jdk15on" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson-module-kotlin" }
+jadb = { module = "app.revanced:jadb", version.ref = "jadb" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
 revanced-patcher = { module = "app.revanced:revanced-patcher", version.ref = "revanced-patcher" }
-revanced-library = { module = "app.revanced:revanced-library", version.ref = "revanced-library" }
 
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }

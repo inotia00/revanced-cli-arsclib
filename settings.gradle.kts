@@ -1,7 +1,7 @@
-rootProject.name = "revanced-cli"
-
 buildCache {
     local {
-        isEnabled = "CI" !in System.getenv()
+        isEnabled = !System.getenv().containsKey("CI")
     }
 }
+
+include("revanced-cli", "revanced-lib")
