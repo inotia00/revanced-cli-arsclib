@@ -12,10 +12,11 @@ repositories {
     google()
     mavenCentral()
     mavenLocal()
+    maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
     maven { url = uri("https://jitpack.io") }
     maven { url = uri("https://plugins.gradle.org/m2/") }
     maven {
-        url = uri("https://maven.pkg.github.com/revanced/multidexlib2")
+        url = uri("https://maven.pkg.github.com/revanced/smali")
         credentials {
             username = githubUsername
             password = githubPassword
@@ -28,7 +29,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.24")
     implementation("app.revanced:smali:2.5.3-a3836654")
 
-    implementation("app.revanced:revanced-patcher:8.0.0-arsclib")
+    implementation("io.github.inotia00:revanced-patcher:8.0.2-arsclib-SNAPSHOT")
     implementation("info.picocli:picocli:4.7.6")
     implementation("com.github.revanced:jadb:2531a28109") // updated fork
     implementation("com.android.tools.build:apksig:8.5.0")
