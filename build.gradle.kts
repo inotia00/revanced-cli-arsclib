@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "1.9.24"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -24,17 +24,17 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.24")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.24")
     implementation("app.revanced:smali:2.5.3-a3836654")
 
     implementation("app.revanced:revanced-patcher:8.0.0-arsclib")
-    implementation("info.picocli:picocli:4.7.5")
+    implementation("info.picocli:picocli:4.7.6")
     implementation("com.github.revanced:jadb:2531a28109") // updated fork
-    implementation("com.android.tools.build:apksig:8.3.2")
+    implementation("com.android.tools.build:apksig:8.5.0")
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.24")
 }
 
 kotlin {
