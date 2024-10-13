@@ -106,6 +106,9 @@ internal object MainCommand : Runnable {
                 @Option(names = ["-m", "--merge"], description = ["One or more dex file containers to merge"])
                 var mergeFiles = listOf<File>()
 
+                @Option(names = ["--alias"], description = ["The alias of the keystore entry to sign the patched APK file with"])
+                var alias = "ReVanced Key"
+
                 @Option(names = ["--cn"], description = ["Overwrite the default CN for the signed file"])
                 var cn = "ReVanced"
 
@@ -116,7 +119,7 @@ internal object MainCommand : Runnable {
                     names = ["-p", "--password"],
                     description = ["Overwrite the default password for the signed file"]
                 )
-                var password = "ReVanced"
+                var password = "" // Empty password by default
 
                 @Option(names = ["-t", "--temp-dir"], description = ["Temporary work directory"])
                 var workDirectory = File("revanced-cache")
@@ -223,14 +226,28 @@ internal object MainCommand : Runnable {
              */
             fun signApks(unsignedApks: List<Pair<File, Apk>>) = if (!args.mount) {
                 with(
-                    ApkSigner(
-                        SigningOptions(
-                            patchingArgs.cn,
-                            patchingArgs.password,
-                            patchingArgs.keystorePath
-                                ?: patchingArgs.outputPath.absoluteFile.resolve("revanced.keystore").canonicalPath
+                    try {
+                        ApkSigner(
+                            SigningOptions(
+                                patchingArgs.alias,
+                                patchingArgs.cn,
+                                patchingArgs.password,
+                                patchingArgs.keystorePath
+                                    ?: patchingArgs.outputPath.absoluteFile.resolve("revanced.keystore").canonicalPath
+                            )
                         )
-                    )
+                    } catch (ignored: Exception) {
+                        logger.info("Try signing with a legacy password")
+                        ApkSigner(
+                            SigningOptions(
+                                "alias",
+                                "ReVanced",
+                                "ReVanced",
+                                patchingArgs.keystorePath
+                                    ?: patchingArgs.outputPath.absoluteFile.resolve("revanced.keystore").canonicalPath
+                            )
+                        )
+                    }
                 ) {
                     unsignedApks.map { (unsignedFile, apk) -> // sign the unsigned apk
                         logger.info("Signing ${unsignedFile.name}")

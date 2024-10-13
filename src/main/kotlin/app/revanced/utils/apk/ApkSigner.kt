@@ -56,7 +56,7 @@ internal class ApkSigner(
         val (publicKey, privateKey) = createKey()
         val privateKS = KeyStore.getInstance("BKS", "BC")
         privateKS.load(null, passwordCharArray)
-        privateKS.setKeyEntry("alias", privateKey, passwordCharArray, arrayOf(publicKey))
+        privateKS.setKeyEntry(signingOptions.alias, privateKey, passwordCharArray, arrayOf(publicKey))
         privateKS.store(FileOutputStream(out), passwordCharArray)
     }
 
