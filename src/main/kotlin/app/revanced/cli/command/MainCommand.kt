@@ -5,21 +5,21 @@ import app.revanced.cli.patcher.logging.impl.PatcherLogger
 import app.revanced.cli.signing.SigningOptions
 import app.revanced.patcher.Patcher
 import app.revanced.patcher.PatcherOptions
-import app.revanced.patcher.PatcherResult
 import app.revanced.patcher.apk.Apk
 import app.revanced.patcher.apk.ApkBundle
-import app.revanced.patcher.Context
 import app.revanced.patcher.extensions.PatchExtensions.compatiblePackages
 import app.revanced.patcher.extensions.PatchExtensions.include
 import app.revanced.patcher.extensions.PatchExtensions.patchName
-import app.revanced.patcher.patch.Patch
 import app.revanced.patcher.patch.PatchClass
 import app.revanced.patcher.util.patch.PatchBundle
 import app.revanced.utils.Options
 import app.revanced.utils.Options.setOptions
 import app.revanced.utils.adb.Adb
 import app.revanced.utils.apk.ApkSigner
-import picocli.CommandLine.*
+import picocli.CommandLine.ArgGroup
+import picocli.CommandLine.Command
+import picocli.CommandLine.IVersionProvider
+import picocli.CommandLine.Option
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -71,6 +71,9 @@ internal object MainCommand : Runnable {
 
             @ArgGroup(exclusive = false)
             var listingArgs: ListingArgs? = null
+
+            @ArgGroup(exclusive = false)
+            var optionsArgs: OptionsArgs? = null
 
             @ArgGroup(exclusive = false)
             var patchingArgs: PatchingArgs? = null
@@ -163,6 +166,23 @@ internal object MainCommand : Runnable {
                 @Option(names = ["--with-packages"], description = ["List patches with compatible packages"])
                 var withPackages: Boolean = false
             }
+
+            /**
+             * Arguments for options json.
+             */
+            class OptionsArgs {
+                @Option(names = ["options"], description = ["Generate options file only"], required = true)
+                var optionsOnly: Boolean = false
+
+                @Option(names = ["--path"], description = ["Path to patch options JSON file"])
+                var filePath: File = File("options.json")
+
+                @Option(names = ["--overwrite"], description = ["Overwrite existing options file"])
+                var overwrite: Boolean = false
+
+                @Option(names = ["--update"], description = ["Update existing options by adding missing and removing non-existent options"])
+                var update: Boolean = false
+            }
         }
     }
 
@@ -170,6 +190,7 @@ internal object MainCommand : Runnable {
         // other types of commands
         // TODO: convert this code to picocli subcommands
         if (args.patchArgs?.listingArgs?.listOnly == true) return printListOfPatches()
+        if (args.patchArgs?.optionsArgs?.optionsOnly == true) return generateOptions()
         if (args.uninstall != null) return uninstall()
 
         // patching commands require these arguments
@@ -236,7 +257,7 @@ internal object MainCommand : Runnable {
                                     ?: patchingArgs.outputPath.absoluteFile.resolve("revanced.keystore").canonicalPath
                             )
                         )
-                    } catch (ignored: Exception) {
+                    } catch (_: Exception) {
                         logger.info("Try signing with a legacy password")
                         ApkSigner(
                             SigningOptions(
@@ -447,6 +468,25 @@ internal object MainCommand : Runnable {
                 logged.add(patch.patchName)
                 logger.info(packageEntryStr)
             }
+        }
+    }
+
+    private fun generateOptions() {
+        val patchArgs = this.args.patchArgs ?: return
+        val optionsArgs = patchArgs.optionsArgs!!
+        val filePath = optionsArgs.filePath
+        val overwrite = optionsArgs.overwrite
+        val update = optionsArgs.update
+
+        val allPatches = patchArgs.patchBundles.flatMap { bundle -> PatchBundle.Jar(bundle).toList() }
+
+        val exists = filePath.exists()
+        if (!exists || overwrite) {
+            if (exists && update) allPatches.setOptions(filePath, logger)
+
+            Options.serialize(allPatches, prettyPrint = true).let(filePath::writeText)
+        } else {
+            logger.error("Options file already exists, use --override to override it")
         }
     }
 }
