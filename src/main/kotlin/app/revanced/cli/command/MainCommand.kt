@@ -171,7 +171,7 @@ internal object MainCommand : Runnable {
              * Arguments for options json.
              */
             class OptionsArgs {
-                @Option(names = ["options"], description = ["Generate options file only"], required = true)
+                @Option(names = ["options"], description = ["Generate options file only"])
                 var optionsOnly: Boolean = false
 
                 @Option(names = ["--path"], description = ["Path to patch options JSON file"])
